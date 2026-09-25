@@ -20,8 +20,19 @@
       "additionalProperties": false,
       "required": ["source"],
       "properties": {
-        "source": { "type": "string", "const": "Map/map" },
-        "npcDatabase": { "type": "boolean", "default": false }
+        "source": { "type": "string", "const": "Map/map" }
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9_./-]+$" }
+        }
       }
     },
     "explorer": {

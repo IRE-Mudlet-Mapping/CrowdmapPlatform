@@ -7,7 +7,7 @@
   "scripts": {
     "generate-map": "node scripts/generate-map.mjs",
     "validate-config": "node scripts/validate-config.mjs",
-    "test": "node --test danger/tests/rules.test.ts",
+    "test": "node --test danger/tests/rules.test.ts scripts/plugins.test.mjs",
     "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {

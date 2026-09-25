@@ -32,6 +32,10 @@ jobs:
           cache-dependency-path: .crowdmap-platform/package-lock.json
       - run: npm ci --prefix .crowdmap-platform
       - run: node .crowdmap-platform/scripts/generate-map.mjs "$GITHUB_WORKSPACE"
+      - name: Prepare after-export plugins
+        run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json after-export "$GITHUB_WORKSPACE"
+      - name: Run after-export plugins
+        run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json after-export "$GITHUB_WORKSPACE"
       - name: Copy published map artifacts
         run: cp -R Map/ "${{ inputs.website-directory }}/"
       - uses: JamesIves/github-pages-deploy-action@v4.9.0
