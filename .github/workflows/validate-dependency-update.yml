@@ -1,0 +1,31 @@
+name: Validate dependency update
+
+on:
+  workflow_call:
+    inputs:
+      platform-ref:
+        type: string
+        default: development
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: IRE-Mudlet-Mapping/CrowdmapPlatform
+          ref: ${{ inputs.platform-ref }}
+          path: .crowdmap-platform
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: .crowdmap-platform/package-lock.json
+      - run: npm ci --prefix .crowdmap-platform
+      - run: npm --prefix .crowdmap-platform test
+      - run: npm --prefix .crowdmap-platform run typecheck
+      - name: Verify map exports can be generated
+        run: node .crowdmap-platform/scripts/generate-map.mjs "$GITHUB_WORKSPACE"

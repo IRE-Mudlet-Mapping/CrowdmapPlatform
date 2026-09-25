@@ -1,0 +1,40 @@
+name: Publish map artifacts
+
+on:
+  workflow_call:
+    inputs:
+      platform-ref:
+        type: string
+        default: development
+      website-directory:
+        type: string
+        default: website
+      deployment-branch:
+        type: string
+        default: gh-pages
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: IRE-Mudlet-Mapping/CrowdmapPlatform
+          ref: ${{ inputs.platform-ref }}
+          path: .crowdmap-platform
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: .crowdmap-platform/package-lock.json
+      - run: npm ci --prefix .crowdmap-platform
+      - run: node .crowdmap-platform/scripts/generate-map.mjs "$GITHUB_WORKSPACE"
+      - name: Copy published map artifacts
+        run: cp -R Map/ "${{ inputs.website-directory }}/"
+      - uses: JamesIves/github-pages-deploy-action@v4.9.0
+        with:
+          branch: ${{ inputs.deployment-branch }}
+          folder: ${{ inputs.website-directory }}

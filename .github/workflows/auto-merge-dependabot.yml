@@ -1,0 +1,29 @@
+name: Auto-merge Dependabot update
+
+on:
+  workflow_call:
+
+jobs:
+  enable-auto-merge:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Find and verify Dependabot pull request
+        id: pull-request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          number="$(gh api "/repos/$REPOSITORY/commits/$HEAD_SHA/pulls" --jq '.[0].number // empty')"
+          test -n "$number"
+          gh api "/repos/$REPOSITORY/pulls/$number" --jq '.user.login + " " + .base.ref' | grep -Fx 'dependabot[bot] development'
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Enable squash auto-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
+        run: gh pr merge --auto --squash "$PR_URL"

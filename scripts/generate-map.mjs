@@ -11,3 +11,8 @@ writeFileSync(resolve(mapDirectory, "map.json"), MudletMapReader.exportJson(map,
 writeFileSync(resolve(mapDirectory, "map_mini.json"), MudletMapReader.exportJson(map, true));
 writeFileSync(resolve(mapDirectory, "mapExport.json"), JSON.stringify(mapData));
 writeFileSync(resolve(mapDirectory, "colors.json"), JSON.stringify(colors));
+
+// Kept during migration for existing consumers. New explorer pages use the
+// JSON files above rather than executable global assignments.
+writeFileSync(resolve(mapDirectory, "mapExport.js"), `mapData = ${JSON.stringify(mapData)}`);
+writeFileSync(resolve(mapDirectory, "colors.js"), `colors = ${JSON.stringify(colors)}`);

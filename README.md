@@ -19,10 +19,10 @@ enable NPC database publication through its game configuration.
 
 ## Status
 
-This initial repository establishes the export contract and a reusable export
-workflow. Validation, normalized diff comments, publishing, and explorer
-integration will be migrated here before any game repository stops carrying
-its current implementation.
+This initial repository establishes the export contract, map scripts, shared
+Danger policy, JSON and visual diff workflows, publishing workflow, dependency
+validation, and Dependabot auto-merge workflow. Explorer integration is the
+remaining platform migration.
 
 ## Consumer configuration
 
