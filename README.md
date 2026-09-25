@@ -51,3 +51,8 @@ Platform dependency updates are validated and released as immutable `v1.x.y`
 tags. After release validation, the maintained `v1` compatibility tag advances
 to the latest compatible release. A game repository only needs a workflow
 change for a breaking `@v2` upgrade.
+
+[Release Please](.github/workflows/release-please.yml) manages this process on
+`development`. Use Conventional Commits for platform changes; it opens a
+release PR with the version and changelog update. Merging that PR creates the
+immutable GitHub release and advances `v1` for compatible major-1 releases.
