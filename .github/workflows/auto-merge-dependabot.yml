@@ -11,7 +11,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Find and verify Dependabot pull request
+      - name: Find eligible Dependabot pull request
         id: pull-request
         env:
           GH_TOKEN: ${{ github.token }}
@@ -19,10 +19,20 @@ jobs:
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           number="$(gh api "/repos/$REPOSITORY/commits/$HEAD_SHA/pulls" --jq '.[0].number // empty')"
-          test -n "$number"
-          gh api "/repos/$REPOSITORY/pulls/$number" --jq '.user.login + " " + .base.ref' | grep -Fx 'dependabot[bot] development'
-          echo "number=$number" >> "$GITHUB_OUTPUT"
+          if test -z "$number"; then
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          pull_request="$(gh api "/repos/$REPOSITORY/pulls/$number" --jq '[.user.login, .base.ref] | @tsv')"
+          if test "$pull_request" = $'dependabot[bot]\tdevelopment'; then
+            echo "eligible=true" >> "$GITHUB_OUTPUT"
+            echo "number=$number" >> "$GITHUB_OUTPUT"
+          else
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Enable squash auto-merge
+        if: steps.pull-request.outputs.eligible == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
