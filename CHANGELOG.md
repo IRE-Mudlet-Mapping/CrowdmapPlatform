@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.5...v1.0.6) (2026-09-25)
+
+
+### Bug Fixes
+
+* skip non-dependabot auto-merge runs ([27af6b7](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/27af6b77bcf9446dedc93580f87c8661fe4d4662))
+
 ## [1.0.5](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.4...v1.0.5) (2026-09-25)
 
 
