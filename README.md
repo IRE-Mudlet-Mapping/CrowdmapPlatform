@@ -40,3 +40,14 @@ Each game repository will add `crowdmap.json`:
 
 The schema is available in [`crowdmap.schema.json`](crowdmap.schema.json).
 See [`plugins/README.md`](plugins/README.md) for the game-owned plugin contract.
+
+## Releases
+
+Game repositories call reusable workflows at `@v1`. Each called workflow also
+checks out the platform scripts at `v1`, so the workflow definition and the
+executed implementation always come from the same compatibility line.
+
+Platform dependency updates are validated and released as immutable `v1.x.y`
+tags. After release validation, the maintained `v1` compatibility tag advances
+to the latest compatible release. A game repository only needs a workflow
+change for a breaking `@v2` upgrade.
