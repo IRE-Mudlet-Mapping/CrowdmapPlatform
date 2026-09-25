@@ -25,9 +25,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-          cache: yarn
-          cache-dependency-path: .crowdmap-platform/yarn.lock
-      - run: yarn --cwd .crowdmap-platform install --frozen-lockfile
-      - run: yarn --cwd .crowdmap-platform danger ci -d danger/dangerfile.ts
+          cache: npm
+          cache-dependency-path: .crowdmap-platform/package-lock.json
+      - run: npm ci --prefix .crowdmap-platform
+      - name: Run the shared checks from the game root
+        run: |
+          cp -R .crowdmap-platform/danger .crowdmap-danger
+          ln -s "$GITHUB_WORKSPACE/.crowdmap-platform/node_modules" "$GITHUB_WORKSPACE/node_modules"
+          ./.crowdmap-platform/node_modules/.bin/danger ci -d .crowdmap-danger/dangerfile.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
