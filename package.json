@@ -7,10 +7,13 @@
   "scripts": {
     "generate-map": "node scripts/generate-map.mjs",
     "validate-config": "node scripts/validate-config.mjs",
+    "lint:commits": "commitlint --from HEAD~1 --to HEAD",
     "test": "node --test danger/tests/rules.test.ts scripts/plugins.test.mjs",
     "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@types/node": "^26.6.2",
     "danger": "^14.0.7",
     "lodash": "^4.18.1",

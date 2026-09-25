@@ -56,3 +56,8 @@ change for a breaking `@v2` upgrade.
 `development`. Use Conventional Commits for platform changes; it opens a
 release PR with the version and changelog update. Merging that PR creates the
 immutable GitHub release and advances `v1` for compatible major-1 releases.
+
+The [Conventional commits workflow](.github/workflows/conventional-commits.yml)
+checks every pull request title and commit. This is deliberate: PR titles become
+squash-merge commit messages, and Release Please derives release notes and
+versions from the resulting commit history.
