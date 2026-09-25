@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.1...v1.0.2) (2026-09-25)
+
+
+### Bug Fixes
+
+* checkout release commit before moving v1 tag ([f2be6a7](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/f2be6a7379b3dc1e311ae1c53ed7d3a86f5b0f9e))
+
 ## [1.0.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.0...v1.0.1) (2026-09-25)
 
 
