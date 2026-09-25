@@ -18,6 +18,11 @@ jobs:
         with:
           release-type: node
           target-branch: development
+      - name: Checkout the release commit
+        if: steps.release.outputs.release_created
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Advance the v1 compatibility tag
         if: steps.release.outputs.release_created && steps.release.outputs.major == '1'
         env:
