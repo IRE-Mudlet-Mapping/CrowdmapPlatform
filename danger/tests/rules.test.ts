@@ -6,6 +6,7 @@ import { createDisallowLockedAreasRule } from "../rules/DisallowLockedAreas.ts";
 import { updateChangelog } from "../rules/UpdateChangelog.ts";
 import { updateMainMapFile } from "../rules/UpdateMainMapFile.ts";
 import { updateVersionFile } from "../rules/UpdateVersionFile.ts";
+import { warnDangerChangesWithoutTests } from "../rules/WarnDangerChangesWithoutTests.ts";
 
 const results = { failures: [] as string[], messages: [] as string[], warnings: [] as string[] };
 Object.assign(globalThis, {
@@ -14,9 +15,12 @@ Object.assign(globalThis, {
   warn: (text: string) => results.warnings.push(text),
 });
 
-function danger({ base = "development", modified = [], diffs = {} }: { base?: string; modified?: string[]; diffs?: Record<string, { before: string; after: string }> } = {}) {
+function danger({ base = "development", created = [], deleted = [], modified = [], diffs = {} }: { base?: string; created?: string[]; deleted?: string[]; modified?: string[]; diffs?: Record<string, { before: string; after: string }> } = {}) {
   return {
     git: {
+      created_files: created,
+      deleted_files: deleted,
+      modified_files: modified,
       fileMatch: (path: string) => ({ edited: modified.includes(path), modified: modified.includes(path) }),
       diffForFile: async (path: string) => diffs[path],
     },
@@ -59,4 +63,10 @@ test("rejects areas where every room is locked", async () => {
   assert.equal((await check(createDisallowLockedAreasRule(map), danger({ modified: ["Map/map"] }))).failures.length, 1);
   map.rooms[10].isLocked = false;
   assert.equal((await check(createDisallowLockedAreasRule(map), danger({ modified: ["Map/map"] }))).messages.length, 1);
+});
+
+test("requires tests for platform and game-owned Danger rule changes", async () => {
+  assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["danger/rules/UpdateChangelog.ts"] }))).warnings.length, 1);
+  assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["crowdmap/plugins/achaea-danger/danger-rules.ts"] }))).warnings.length, 1);
+  assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["crowdmap/plugins/achaea-danger/danger-rules.ts", "crowdmap/plugins/achaea-danger/danger-rules.test.ts"] }))).warnings.length, 0);
 });

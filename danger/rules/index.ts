@@ -3,3 +3,4 @@ export { disallowLockedAreas } from "./DisallowLockedAreas.ts";
 export * from "./UpdateChangelog.ts";
 export * from "./UpdateMainMapFile.ts";
 export * from "./UpdateVersionFile.ts";
+export * from "./WarnDangerChangesWithoutTests.ts";
