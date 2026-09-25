@@ -25,9 +25,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: .crowdmap-platform/package-lock.json
-      - run: npm ci --prefix .crowdmap-platform
-      - run: npx --prefix .crowdmap-platform danger ci -d .crowdmap-platform/danger/dangerfile.ts
+          cache: yarn
+          cache-dependency-path: .crowdmap-platform/yarn.lock
+      - run: yarn --cwd .crowdmap-platform install --frozen-lockfile
+      - run: yarn --cwd .crowdmap-platform danger ci -d danger/dangerfile.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
