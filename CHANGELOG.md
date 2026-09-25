@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.2...v1.0.3) (2026-09-25)
+
+
+### Bug Fixes
+
+* align danger module settings with map repositories ([9210671](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/9210671e0987eb5f6c857c432a17b790e337be10))
+* load map reader asynchronously in danger ([7d1fa1d](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/7d1fa1d366962114319e50e2f6d83d11c698ce80))
+
 ## [1.0.2](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.1...v1.0.2) (2026-09-25)
 
 
