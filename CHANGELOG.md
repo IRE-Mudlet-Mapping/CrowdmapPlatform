@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.4...v1.0.5) (2026-09-25)
+
+
+### Bug Fixes
+
+* evaluate shared danger rules from game root ([4d017ab](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/4d017ab094b2240a240e4afc077f73b16d07be1a))
+
 ## [1.0.4](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.3...v1.0.4) (2026-09-25)
 
 
