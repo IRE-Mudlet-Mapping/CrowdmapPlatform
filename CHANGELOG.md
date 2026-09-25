@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.3...v1.0.4) (2026-09-25)
+
+
+### Bug Fixes
+
+* run danger with yarn ([2b371fb](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/2b371fbe313931923e8835ce89a0f95ce77a3d8d))
+
 ## [1.0.3](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.2...v1.0.3) (2026-09-25)
 
 
