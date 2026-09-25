@@ -1,0 +1,29 @@
+name: Export map artifacts
+
+on:
+  workflow_call:
+
+jobs:
+  export-map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: IRE-Mudlet-Mapping/CrowdmapPlatform
+          path: .crowdmap-platform
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: .crowdmap-platform/package-lock.json
+      - name: Install platform dependencies
+        run: npm ci --prefix .crowdmap-platform
+      - name: Generate canonical map exports
+        run: node .crowdmap-platform/scripts/generate-map.mjs "$GITHUB_WORKSPACE"
+      - name: Verify generated JSON
+        run: |
+          jq empty Map/map.json
+          jq empty Map/map_mini.json
+          jq empty Map/mapExport.json
+          jq empty Map/colors.json

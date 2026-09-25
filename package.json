@@ -1,0 +1,14 @@
+{
+  "name": "@ire-mudlet-mapping/crowdmap-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@12.0.2",
+  "scripts": {
+    "generate-map": "node scripts/generate-map.mjs",
+    "validate-config": "node scripts/validate-config.mjs"
+  },
+  "dependencies": {
+    "mudlet-map-binary-reader": "^2.0.0"
+  }
+}

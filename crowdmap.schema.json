@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ire-mudlet-mapping.github.io/CrowdmapPlatform/crowdmap.schema.json",
+  "title": "Crowdmap configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["game", "map", "explorer"],
+  "properties": {
+    "game": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": "string", "minLength": 1 }
+      }
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": { "type": "string", "const": "Map/map" },
+        "npcDatabase": { "type": "boolean", "default": false }
+      }
+    },
+    "explorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "logo": { "type": "string" },
+        "npcUrl": { "type": "string" }
+      }
+    }
+  }
+}
