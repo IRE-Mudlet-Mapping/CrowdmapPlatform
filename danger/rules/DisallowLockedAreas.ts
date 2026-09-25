@@ -1,8 +1,13 @@
-import type { MudletMap } from "mudlet-map-binary-reader";
 import { MapChangeRule } from "../classes/Rule.ts";
 import mapModel from "../helpers/MapModel.ts";
 
-export function createDisallowLockedAreasRule(map: Pick<MudletMap, "areaNames" | "areas" | "rooms"> | null) {
+type MapForLockedAreas = {
+  areaNames: Record<number, string>;
+  areas: Record<number, { rooms: number[] }>;
+  rooms: Record<number, { isLocked: boolean }>;
+};
+
+export function createDisallowLockedAreasRule(map: MapForLockedAreas | null) {
   if (map === null) return new MapChangeRule(async () => true, "No map is available in the repository template.");
   const locked = Object.entries(map.areas)
     .filter(([, area]) => area.rooms.length > 0 && area.rooms.every((id) => map.rooms[id].isLocked))

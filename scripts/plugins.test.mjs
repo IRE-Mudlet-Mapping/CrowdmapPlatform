@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { resolvePlugins } from "./plugins.mjs";
+import { generateDangerExtensions } from "./generate-danger-extensions.mjs";
 
 function fixture(config) {
   const directory = mkdtempSync(join(tmpdir(), "crowdmap-plugin-"));
@@ -32,6 +33,25 @@ test("rejects a plugin outside the game repository", () => {
   const directory = fixture({ plugins: [{ path: "../denizens" }] });
   try {
     assert.throws(() => resolvePlugins(directory));
+  } finally {
+    rmSync(directory, { recursive: true });
+  }
+});
+
+test("generates static imports for game-owned danger rules", () => {
+  const directory = fixture({ plugins: [{ path: "crowdmap/plugins/denizens" }] });
+  const plugin = join(directory, "crowdmap", "plugins", "denizens");
+  const output = join(directory, ".crowdmap-danger", "extensions.ts");
+  mkdirSync(join(directory, ".crowdmap-danger"));
+  writeFileSync(join(plugin, "crowdmap-plugin.json"), JSON.stringify({
+    id: "achaea-denizens",
+    hooks: {},
+    dangerRules: "danger-rules.ts",
+  }));
+  writeFileSync(join(plugin, "danger-rules.ts"), "export const gameRule = {};\n");
+  try {
+    generateDangerExtensions("crowdmap.json", output, directory);
+    assert.match(readFileSync(output, "utf8"), /export \* from "\.\.\/crowdmap\/plugins\/denizens\/danger-rules\.ts"/);
   } finally {
     rmSync(directory, { recursive: true });
   }

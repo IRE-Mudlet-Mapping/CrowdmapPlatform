@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type { DangerDSLType } from "danger";
 import { checkCorrectBranch } from "../rules/CorrectBranch.ts";
+import { createDisallowLockedAreasRule } from "../rules/DisallowLockedAreas.ts";
 import { updateChangelog } from "../rules/UpdateChangelog.ts";
+import { updateMainMapFile } from "../rules/UpdateMainMapFile.ts";
 import { updateVersionFile } from "../rules/UpdateVersionFile.ts";
 
 const results = { failures: [] as string[], messages: [] as string[], warnings: [] as string[] };
@@ -38,7 +40,23 @@ test("requires a changelog with a map update", async () => {
   assert.equal((await check(updateChangelog, danger({ modified: ["Map/map", "Map/changelog.txt"] }))).messages.length, 1);
 });
 
+test("requires the binary map file with a map update", async () => {
+  assert.equal((await check(updateMainMapFile, danger({ modified: [] }))).warnings.length, 1);
+  assert.equal((await check(updateMainMapFile)).warnings.length, 0);
+});
+
 test("requires the map version to increase by one", async () => {
   const valid = danger({ modified: ["Map/map", "Map/version.txt"], diffs: { "Map/version.txt": { before: "1", after: "2" } } });
   assert.equal((await check(updateVersionFile, valid)).messages.length, 1);
+});
+
+test("rejects areas where every room is locked", async () => {
+  const map = {
+    areaNames: { 1: "Locked area", 2: "Open area" },
+    areas: { 1: { rooms: [10] }, 2: { rooms: [11] } },
+    rooms: { 10: { isLocked: true }, 11: { isLocked: false } },
+  };
+  assert.equal((await check(createDisallowLockedAreasRule(map), danger({ modified: ["Map/map"] }))).failures.length, 1);
+  map.rooms[10].isLocked = false;
+  assert.equal((await check(createDisallowLockedAreasRule(map), danger({ modified: ["Map/map"] }))).messages.length, 1);
 });

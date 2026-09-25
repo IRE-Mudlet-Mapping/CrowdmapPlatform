@@ -1,6 +1,6 @@
 import { MudletMapReader } from "mudlet-map-binary-reader";
-import fs from "fs";
+import { existsSync, readFileSync } from "fs";
 
-const input = fs.readFileSync("./Map/map");
+const input = existsSync("./Map/map") ? readFileSync("./Map/map") : null;
 
-export default input.length > 0 ? MudletMapReader.readBuffer(input) : null;
+export default input && input.length > 0 ? MudletMapReader.readBuffer(input) : null;

@@ -13,6 +13,24 @@ Every game plugin declares in `crowdmap-plugin.json`:
 - required GitHub secrets; and
 - a documented configuration object and tests.
 
+## Danger rule extensions
+
+Plugins can also add game-specific pull-request rules with a `dangerRules`
+module. The platform generates static exports for these modules and evaluates
+them alongside its common rules. The module must export objects implementing
+the shared `Rule` shape: a `check(danger)` function.
+
+```json
+{
+  "id": "achaea-danger-rules",
+  "hooks": {},
+  "dangerRules": "danger-rules.ts"
+}
+```
+
+Danger checks run from the trusted base checkout: a pull request can supply a
+candidate map file, but cannot alter the extension code that is executed.
+
 For example, Achaea can own `crowdmap/plugins/denizens/`:
 
 ```json

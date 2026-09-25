@@ -32,6 +32,7 @@ jobs:
         run: |
           cp -R .crowdmap-platform/danger .crowdmap-danger
           ln -s "$GITHUB_WORKSPACE/.crowdmap-platform/node_modules" "$GITHUB_WORKSPACE/node_modules"
+          node .crowdmap-platform/scripts/generate-danger-extensions.mjs crowdmap.json .crowdmap-danger/extensions.ts "$GITHUB_WORKSPACE"
           ./.crowdmap-platform/node_modules/.bin/danger ci -d .crowdmap-danger/dangerfile.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
