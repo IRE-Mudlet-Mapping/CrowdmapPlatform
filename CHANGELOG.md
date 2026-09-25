@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.6...v1.1.0) (2026-09-25)
+
+
+### Features
+
+* support game danger rule extensions ([ea25d62](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/ea25d62e72c7d06bbae06e5dd9b67e42e6e4b2fc))
+
 ## [1.0.6](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.5...v1.0.6) (2026-09-25)
 
 
