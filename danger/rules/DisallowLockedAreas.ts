@@ -1,6 +1,6 @@
 import type { MudletMap } from "mudlet-map-binary-reader";
+import { readFile } from "node:fs/promises";
 import { MapChangeRule } from "../classes/Rule.ts";
-import mapModel from "../helpers/MapModel.ts";
 
 export function createDisallowLockedAreasRule(map: Pick<MudletMap, "areaNames" | "areas" | "rooms"> | null) {
   if (map === null) return new MapChangeRule(async () => true, "No map is available in the repository template.");
@@ -13,4 +13,15 @@ export function createDisallowLockedAreasRule(map: Pick<MudletMap, "areaNames" |
   );
 }
 
-export const disallowLockedAreas = createDisallowLockedAreasRule(mapModel);
+export const disallowLockedAreas = {
+  async check(danger: Parameters<MapChangeRule["check"]>[0]) {
+    if (!danger.git.fileMatch("Map/map").modified) return;
+    const input = await readFile("Map/map");
+    if (input.length === 0) {
+      await createDisallowLockedAreasRule(null).check(danger);
+      return;
+    }
+    const { MudletMapReader } = await import("mudlet-map-binary-reader");
+    await createDisallowLockedAreasRule(MudletMapReader.readBuffer(input)).check(danger);
+  },
+};
