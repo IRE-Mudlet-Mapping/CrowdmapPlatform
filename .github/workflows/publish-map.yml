@@ -38,7 +38,15 @@ jobs:
         run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json after-export "$GITHUB_WORKSPACE"
       - name: Copy published map artifacts
         run: cp -R Map/ "${{ inputs.website-directory }}/"
+      - name: Prepare before-publish plugins
+        run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json before-publish "$GITHUB_WORKSPACE"
+      - name: Run before-publish plugins
+        run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json before-publish "$GITHUB_WORKSPACE"
       - uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           branch: ${{ inputs.deployment-branch }}
           folder: ${{ inputs.website-directory }}
+      - name: Prepare after-publish plugins
+        run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json after-publish "$GITHUB_WORKSPACE"
+      - name: Run after-publish plugins
+        run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json after-publish "$GITHUB_WORKSPACE"

@@ -26,5 +26,6 @@ For example, Achaea can own `crowdmap/plugins/denizens/`:
 ```
 
 The reusable publish workflow resolves plugin paths beneath the caller
-repository, installs only their declared packages, and invokes the requested
-hook. Plugins never run as part of untrusted pull-request validation.
+repository, installs only their declared packages, and invokes `after-export`,
+`before-publish`, and `after-publish` in that order. Plugins never run as part
+of untrusted pull-request validation.
