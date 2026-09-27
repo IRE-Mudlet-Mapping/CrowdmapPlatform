@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.1.0...v1.2.0) (2026-09-25)
+
+
+### Features
+
+* share danger rule test coverage policy ([35d69ed](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/35d69ed05aa345bd604afd5e6616a2630c207a77))
+
 ## [1.1.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.0.6...v1.1.0) (2026-09-25)
 
 
