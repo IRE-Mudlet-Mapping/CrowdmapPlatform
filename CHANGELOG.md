@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.2.0...v1.3.0) (2026-09-27)
+
+
+### Features
+
+* validate danger plugin dependencies ([b8c974d](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/b8c974d1b3bdbaf6a5fabc6ec4ae27678d5434db))
+
 ## [1.2.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.1.0...v1.2.0) (2026-09-25)
 
 
