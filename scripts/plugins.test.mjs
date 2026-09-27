@@ -29,6 +29,22 @@ test("resolves a game-owned plugin for its declared hook", () => {
   }
 });
 
+test("resolves a game-owned Danger plugin", () => {
+  const directory = fixture({ plugins: [{ path: "crowdmap/plugins/denizens" }] });
+  const plugin = join(directory, "crowdmap", "plugins", "denizens");
+  writeFileSync(join(plugin, "crowdmap-plugin.json"), JSON.stringify({
+    id: "achaea-danger",
+    hooks: {},
+    dangerRules: "danger-rules.ts",
+  }));
+  try {
+    assert.equal(resolvePlugins(directory, "crowdmap.json", "danger").length, 1);
+    assert.equal(resolvePlugins(directory, "crowdmap.json", "after-export").length, 0);
+  } finally {
+    rmSync(directory, { recursive: true });
+  }
+});
+
 test("rejects a plugin outside the game repository", () => {
   const directory = fixture({ plugins: [{ path: "../denizens" }] });
   try {

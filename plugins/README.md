@@ -31,6 +31,11 @@ the shared `Rule` shape: a `check(danger)` function.
 Danger checks run from the trusted base checkout: a pull request can supply a
 candidate map file, but cannot alter the extension code that is executed.
 
+A Danger plugin may own a `package.json` and lockfile. The platform installs
+those dependencies before loading the rules, and the dependency-validation
+workflow runs the plugin's `test` and `typecheck` scripts when present. This
+keeps game-specific development tools and dependencies with the game plugin.
+
 For example, Achaea can own `crowdmap/plugins/denizens/`:
 
 ```json

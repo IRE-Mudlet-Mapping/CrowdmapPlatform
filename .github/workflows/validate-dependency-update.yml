@@ -23,5 +23,9 @@ jobs:
       - run: npm ci --prefix .crowdmap-platform
       - run: npm --prefix .crowdmap-platform test
       - run: npm --prefix .crowdmap-platform run typecheck
+      - name: Install game-owned Danger plugin dependencies
+        run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json danger "$GITHUB_WORKSPACE"
+      - name: Test game-owned Danger plugins
+        run: node .crowdmap-platform/scripts/validate-plugins.mjs crowdmap.json danger "$GITHUB_WORKSPACE"
       - name: Verify map exports can be generated
         run: node .crowdmap-platform/scripts/generate-map.mjs "$GITHUB_WORKSPACE"

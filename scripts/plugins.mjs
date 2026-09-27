@@ -15,5 +15,6 @@ export function resolvePlugins(baseDirectory, configPath = "crowdmap.json", hook
     }
     return { directory, packageJson: existsSync(resolve(directory, "package.json")), ...manifest };
   });
+  if (hook === "danger") return plugins.filter((plugin) => plugin.dangerRules);
   return hook ? plugins.filter((plugin) => plugin.hooks[hook]) : plugins;
 }
