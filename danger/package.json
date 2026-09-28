@@ -1,13 +1,32 @@
 {
   "name": "@ire-mudlet-mapping/crowdmap-danger",
-  "private": true,
+  "version": "0.0.0-development",
+  "description": "Shared Danger rule framework for IRE Mudlet crowdmaps",
   "type": "module",
+  "files": [
+    "classes",
+    "helpers",
+    "README.md"
+  ],
   "exports": {
     "./MapModel": "./helpers/MapModel.ts",
     "./Rule": "./classes/Rule.ts"
   },
-  "peerDependencies": {
-    "danger": "^14.0.7",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform.git",
+    "directory": "danger"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
     "mudlet-map-binary-reader": "^2.0.0"
+  },
+  "peerDependencies": {
+    "danger": "^14.0.7"
   }
 }

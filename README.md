@@ -25,10 +25,10 @@ Game-specific steps,
 including Achaea's denizen database publication, use game-owned plugins rather
 than being embedded in the common pipeline.
 
-Game-owned Danger rules import their base rule types and map loader from the
-platform's `@ire-mudlet-mapping/crowdmap-danger` package. This keeps the rule
-definitions game-owned while using the same framework in shared CI and local
-plugin tests.
+Game-owned Danger rules install their base rule types and map loader from the
+public `@ire-mudlet-mapping/crowdmap-danger` npm package. This keeps the rule
+definitions game-owned while using the same released framework in shared CI
+and local plugin tests without a platform checkout or filesystem link.
 
 ## Status
 
@@ -73,7 +73,8 @@ change for a breaking `@v2` upgrade.
 [Release Please](.github/workflows/release-please.yml) manages this process on
 `development`. Use Conventional Commits for platform changes; it opens a
 release PR with the version and changelog update. Merging that PR creates the
-immutable GitHub release and advances `v1` for compatible major-1 releases.
+immutable GitHub release, publishes the matching shared Danger SDK version to
+npm, and advances `v1` for compatible major-1 releases.
 
 The [Conventional commits workflow](.github/workflows/conventional-commits.yml)
 checks every pull request title and commit. This is deliberate: PR titles become

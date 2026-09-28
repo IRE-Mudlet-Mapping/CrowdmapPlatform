@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
   issues: write
   pull-requests: write
 
@@ -23,6 +24,22 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+      - name: Set up Node.js for npm publishing
+        if: steps.release.outputs.release_created
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Install npm with trusted-publishing support
+        if: steps.release.outputs.release_created
+        run: npm install --global npm@12
+      - name: Publish the shared Danger SDK
+        if: steps.release.outputs.release_created
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          npm pkg set version="$RELEASE_VERSION" --prefix danger
+          npm publish ./danger --access public --provenance
       - name: Advance the v1 compatibility tag
         if: steps.release.outputs.release_created && steps.release.outputs.major == '1'
         env:
