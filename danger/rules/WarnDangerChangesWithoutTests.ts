@@ -20,8 +20,7 @@ export const warnDangerChangesWithoutTests = new SanityCheckRule(
       ...danger.git.created_files,
       ...danger.git.deleted_files,
     ];
-    const testChanges = [...danger.git.modified_files, ...danger.git.created_files];
-    return !changed.some(isRuleSource) || testChanges.some(isRuleTest);
+    return !changed.some(isRuleSource) || changed.some(isRuleTest);
   },
   "Danger rules changed without corresponding test changes."
 );

@@ -70,6 +70,7 @@ test("requires tests for platform and game-owned Danger rule changes", async () 
   assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["danger/rules/UpdateChangelog.ts"] }))).warnings.length, 1);
   assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["crowdmap/plugins/achaea-danger/danger-rules.ts"] }))).warnings.length, 1);
   assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["crowdmap/plugins/achaea-danger/danger-rules.ts", "crowdmap/plugins/achaea-danger/danger-rules.test.ts"] }))).warnings.length, 0);
+  assert.equal((await check(warnDangerChangesWithoutTests, danger({ deleted: ["danger/rules/Obsolete.ts", "danger/tests/obsolete.test.ts"] }))).warnings.length, 0);
 });
 
 test("evaluates lazily constructed rule messages", async () => {
