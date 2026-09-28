@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.5.0...v1.6.0) (2026-09-28)
+
+
+### Features
+
+* adopt maintained mudlet map browser ([200e73a](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/200e73a4712bed72f4dbd1ca5b765e98201de97e))
+
 ## [1.5.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.4.0...v1.5.0) (2026-09-28)
 
 
