@@ -1,9 +1,10 @@
-import { cpSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, copyFileSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const platformDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const explorerDirectory = resolve(platformDirectory, "explorer");
+const browserDistributionDirectory = resolve(platformDirectory, "node_modules/mudlet-map-browser-script/dist");
 
 function escapeHtml(value) {
   return value
@@ -11,6 +12,13 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
+}
+
+function serializeScriptValue(value) {
+  return JSON.stringify(value, null, 2)
+    .replaceAll("<", "\\u003c")
+    .replaceAll("\u2028", "\\u2028")
+    .replaceAll("\u2029", "\\u2029");
 }
 
 export function prepareExplorer(baseDirectory = ".", configPath = "crowdmap.json", outputDirectory = "website") {
@@ -31,16 +39,22 @@ export function prepareExplorer(baseDirectory = ".", configPath = "crowdmap.json
 
   rmSync(output, { recursive: true, force: true });
   cpSync(explorerDirectory, output, { recursive: true });
+  copyFileSync(resolve(browserDistributionDirectory, "index.min.css"), resolve(output, "index.min.css"));
+  copyFileSync(resolve(browserDistributionDirectory, "index.min.js"), resolve(output, "index.min.js"));
 
   const indexPath = resolve(output, "index.html");
-  const npcUrl = config.explorer?.npcUrl;
-  const npcAttribute = typeof npcUrl === "string" && npcUrl.length > 0
-    ? ` data-npc="${escapeHtml(npcUrl)}"`
-    : "";
+  const explorer = config.explorer ?? {};
+  const browserConfig = {
+    mapDataUrl: "Map/mapExport.json",
+    colorsUrl: "Map/colors.json",
+    title,
+  };
+  for (const key of ["npcUrl", "logo", "theme", "credits"]) {
+    if (explorer[key] !== undefined) browserConfig[key] = explorer[key];
+  }
   const renderedIndex = readFileSync(indexPath, "utf8")
     .replaceAll("{{DOCUMENT_TITLE}}", `${escapeHtml(title)} by IRE-Mudlet-Mapping`)
-    .replaceAll("{{EXPLORER_TITLE}}", escapeHtml(title))
-    .replaceAll("{{NPC_ATTRIBUTE}}", npcAttribute);
+    .replaceAll("{{MAP_CONFIG}}", serializeScriptValue(browserConfig));
 
   writeFileSync(indexPath, renderedIndex);
   return output;

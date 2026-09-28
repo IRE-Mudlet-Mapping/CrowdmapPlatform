@@ -40,7 +40,23 @@
       "additionalProperties": false,
       "properties": {
         "logo": { "type": "string" },
-        "npcUrl": { "type": "string" }
+        "npcUrl": { "type": "string" },
+        "theme": { "enum": ["light", "dark"] },
+        "credits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "author": { "type": "string" },
+            "githubUrl": { "type": "string" },
+            "githubLabel": { "type": "string" },
+            "remark": {
+              "oneOf": [
+                { "type": "string" },
+                { "type": "object", "additionalProperties": { "type": "string" } }
+              ]
+            }
+          }
+        }
       }
     }
   }

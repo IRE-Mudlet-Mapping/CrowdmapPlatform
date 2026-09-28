@@ -14,10 +14,13 @@ The canonical exports are `Map/map.json` (readable), `Map/map_mini.json`
 (minified), `Map/mapExport.json`, and `Map/colors.json`. The original binary
 map remains `Map/map`; no duplicate `map.dat` is published.
 
-The platform-owned explorer consumes `mapExport.json` and `colors.json`. Its
-current vendored assets use the canonical `game.title` and optional
-`explorer.npcUrl`; game repositories do not carry a `website/` copy. The
-`explorer` object is omitted when no explorer-specific settings are needed.
+The platform-owned explorer uses the maintained
+[`mudlet-map-browser-script`](https://github.com/Delwing/mudlet-map-browser-script)
+bundle and consumes `mapExport.json` and `colors.json`. The bundle version is
+locked and updated centrally through Dependabot. Its native `MAP_CONFIG` uses
+the canonical `game.title` plus optional `explorer.logo`, `explorer.theme`,
+`explorer.credits`, and `explorer.npcUrl`. Game repositories do not carry web
+assets, and omit `explorer` when no explorer-specific settings are needed.
 Game-specific steps,
 including Achaea's denizen database publication, use game-owned plugins rather
 than being embedded in the common pipeline.
@@ -26,9 +29,7 @@ than being embedded in the common pipeline.
 
 This repository establishes the export contract, map scripts, shared Danger
 policy, JSON and visual diff workflows, publishing workflow, explorer assets,
-dependency validation, and Dependabot auto-merge workflow. Updating the
-centralized vendored explorer to the maintained map-browser upstream is a
-separate follow-up migration.
+dependency validation, and Dependabot auto-merge workflow.
 
 ## Consumer configuration
 
@@ -38,7 +39,15 @@ Each game repository will add `crowdmap.json`:
 {
   "game": { "id": "imperian", "title": "The Imperian Map" },
   "map": { "source": "Map/map" },
-  "plugins": []
+  "plugins": [],
+  "explorer": {
+    "theme": "dark",
+    "logo": "https://example.com/imperian-logo.svg",
+    "credits": {
+      "author": "IRE Mudlet Mapping contributors",
+      "githubUrl": "https://github.com/IRE-Mudlet-Mapping/ImperianCrowdmap"
+    }
+  }
 }
 ```
 

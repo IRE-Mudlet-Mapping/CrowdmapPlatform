@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -11,6 +11,9 @@ test("copies and renders the shared explorer", () => {
     game: { title: "The Test & Example Map" },
     explorer: {
       npcUrl: "./Map/denizen.json?kind=person&active=true",
+      logo: "branding/logo.svg",
+      theme: "light",
+      credits: { author: "Map contributors", githubUrl: "https://example.test/maps" },
     },
   }));
 
@@ -18,10 +21,20 @@ test("copies and renders the shared explorer", () => {
 
   const index = readFileSync(join(root, "website", "index.html"), "utf8");
   assert.match(index, /<title>The Test &amp; Example Map by IRE-Mudlet-Mapping<\/title>/);
-  assert.match(index, /<span id="title">The Test &amp; Example Map<\/span>/);
-  assert.match(index, /data-npc="\.\/Map\/denizen\.json\?kind=person&amp;active=true"/);
+  const serializedConfig = index.match(/window\.MAP_CONFIG = ([\s\S]*?);\n/)[1];
+  assert.deepEqual(JSON.parse(serializedConfig), {
+    mapDataUrl: "Map/mapExport.json",
+    colorsUrl: "Map/colors.json",
+    title: "The Test & Example Map",
+    npcUrl: "./Map/denizen.json?kind=person&active=true",
+    logo: "branding/logo.svg",
+    theme: "light",
+    credits: { author: "Map contributors", githubUrl: "https://example.test/maps" },
+  });
   assert.doesNotMatch(index, /\{\{[A-Z_]+\}\}/);
   assert.equal(readFileSync(join(root, "website", ".nojekyll"), "utf8"), "");
+  assert.ok(statSync(join(root, "website", "index.min.css")).size > 0);
+  assert.ok(statSync(join(root, "website", "index.min.js")).size > 0);
 });
 
 test("omits NPC integration unless configured", () => {
@@ -31,7 +44,12 @@ test("omits NPC integration unless configured", () => {
   prepareExplorer(root);
 
   const index = readFileSync(join(root, "website", "index.html"), "utf8");
-  assert.doesNotMatch(index, /data-npc=/);
+  const serializedConfig = index.match(/window\.MAP_CONFIG = ([\s\S]*?);\n/)[1];
+  assert.deepEqual(JSON.parse(serializedConfig), {
+    mapDataUrl: "Map/mapExport.json",
+    colorsUrl: "Map/colors.json",
+    title: "The Test Map",
+  });
 });
 
 test("refuses to replace the game repository root", () => {
