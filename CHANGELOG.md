@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.9.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.8.1...v1.9.0) (2026-09-28)
+
+
+### Features
+
+* **danger:** provide local extension runner ([9e0e2fc](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/9e0e2fcb51bfd9ba4b69429d410f7543730e58aa))
+
+
+### Bug Fixes
+
+* **ci:** avoid approval for commit checks ([ce3b49f](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/ce3b49fe2dcfd71e871b8d82097e9e5f78da7d03))
+
 ## [1.8.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.8.0...v1.8.1) (2026-09-28)
 
 
