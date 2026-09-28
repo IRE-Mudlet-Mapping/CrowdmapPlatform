@@ -3,11 +3,15 @@
   "version": "0.0.0-development",
   "description": "Shared Danger rule framework for IRE Mudlet crowdmaps",
   "type": "module",
+  "bin": {
+    "crowdmap-danger": "bin/crowdmap-danger.mjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepack": "npm run build"
   },
   "files": [
+    "bin",
     "classes",
     "dist",
     "helpers",
@@ -35,9 +39,8 @@
     "access": "public"
   },
   "dependencies": {
+    "danger": "^14.0.7",
+    "esbuild": "^0.25.10",
     "mudlet-map-binary-reader": "^2.0.0"
-  },
-  "peerDependencies": {
-    "danger": "^14.0.7"
   }
 }

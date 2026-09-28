@@ -1,5 +1,7 @@
 import type { DangerDSLType } from "danger";
 
+export type { DangerDSLType } from "danger";
+
 declare const fail: typeof import("danger").fail;
 declare const message: typeof import("danger").message;
 declare const warn: typeof import("danger").warn;
