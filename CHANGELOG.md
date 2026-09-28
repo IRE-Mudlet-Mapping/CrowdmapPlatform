@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.7.0...v1.7.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **danger:** accept removal of obsolete rule tests ([e3ca921](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/e3ca9219c42923d644b39a8d8d1ad2414a1e0ebd))
+
 ## [1.7.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.6.0...v1.7.0) (2026-09-28)
 
 
