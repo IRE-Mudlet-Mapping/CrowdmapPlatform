@@ -4,7 +4,7 @@
   "title": "Crowdmap configuration",
   "type": "object",
   "additionalProperties": false,
-  "required": ["game", "map", "explorer"],
+  "required": ["game", "map"],
   "properties": {
     "game": {
       "type": "object",
@@ -38,9 +38,7 @@
     "explorer": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["title"],
       "properties": {
-        "title": { "type": "string", "minLength": 1 },
         "logo": { "type": "string" },
         "npcUrl": { "type": "string" }
       }

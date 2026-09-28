@@ -15,8 +15,9 @@ The canonical exports are `Map/map.json` (readable), `Map/map_mini.json`
 map remains `Map/map`; no duplicate `map.dat` is published.
 
 The platform-owned explorer consumes `mapExport.json` and `colors.json`. Its
-current vendored assets are rendered from `explorer.title` and optional
-`explorer.npcUrl`; game repositories do not carry a `website/` copy.
+current vendored assets use the canonical `game.title` and optional
+`explorer.npcUrl`; game repositories do not carry a `website/` copy. The
+`explorer` object is omitted when no explorer-specific settings are needed.
 Game-specific steps,
 including Achaea's denizen database publication, use game-owned plugins rather
 than being embedded in the common pipeline.
@@ -37,8 +38,7 @@ Each game repository will add `crowdmap.json`:
 {
   "game": { "id": "imperian", "title": "The Imperian Map" },
   "map": { "source": "Map/map" },
-  "plugins": [],
-  "explorer": { "title": "The Imperian Map" }
+  "plugins": []
 }
 ```
 

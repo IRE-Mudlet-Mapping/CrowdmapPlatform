@@ -24,16 +24,16 @@ export function prepareExplorer(baseDirectory = ".", configPath = "crowdmap.json
   }
 
   const config = JSON.parse(readFileSync(configFile, "utf8"));
-  const title = config.explorer?.title;
+  const title = config.game?.title;
   if (typeof title !== "string" || title.length === 0) {
-    throw new Error("crowdmap.json must define explorer.title");
+    throw new Error("crowdmap.json must define game.title");
   }
 
   rmSync(output, { recursive: true, force: true });
   cpSync(explorerDirectory, output, { recursive: true });
 
   const indexPath = resolve(output, "index.html");
-  const npcUrl = config.explorer.npcUrl;
+  const npcUrl = config.explorer?.npcUrl;
   const npcAttribute = typeof npcUrl === "string" && npcUrl.length > 0
     ? ` data-npc="${escapeHtml(npcUrl)}"`
     : "";
