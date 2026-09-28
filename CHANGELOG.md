@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.9.0...v1.9.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **danger:** run CLI through npm bin link ([b11e379](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/b11e3795eea6576e6d4f6ad80743e3463a76980e))
+
 ## [1.9.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.8.1...v1.9.0) (2026-09-28)
 
 
