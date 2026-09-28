@@ -1,0 +1,13 @@
+{
+  "name": "@ire-mudlet-mapping/crowdmap-danger",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./MapModel": "./helpers/MapModel.ts",
+    "./Rule": "./classes/Rule.ts"
+  },
+  "peerDependencies": {
+    "danger": "^14.0.7",
+    "mudlet-map-binary-reader": "^2.0.0"
+  }
+}

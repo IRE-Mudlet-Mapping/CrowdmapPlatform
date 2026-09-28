@@ -25,6 +25,11 @@ Game-specific steps,
 including Achaea's denizen database publication, use game-owned plugins rather
 than being embedded in the common pipeline.
 
+Game-owned Danger rules import their base rule types and map loader from the
+platform's `@ire-mudlet-mapping/crowdmap-danger` package. This keeps the rule
+definitions game-owned while using the same framework in shared CI and local
+plugin tests.
+
 ## Status
 
 This repository establishes the export contract, map scripts, shared Danger

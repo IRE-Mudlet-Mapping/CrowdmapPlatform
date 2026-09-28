@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { DangerDSLType } from "danger";
+import { RedGreenRule, RoomCheckRule, SanityCheckRule } from "../classes/Rule.ts";
 import { checkCorrectBranch } from "../rules/CorrectBranch.ts";
 import { createDisallowLockedAreasRule } from "../rules/DisallowLockedAreas.ts";
 import { updateChangelog } from "../rules/UpdateChangelog.ts";
@@ -69,4 +70,20 @@ test("requires tests for platform and game-owned Danger rule changes", async () 
   assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["danger/rules/UpdateChangelog.ts"] }))).warnings.length, 1);
   assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["crowdmap/plugins/achaea-danger/danger-rules.ts"] }))).warnings.length, 1);
   assert.equal((await check(warnDangerChangesWithoutTests, danger({ modified: ["crowdmap/plugins/achaea-danger/danger-rules.ts", "crowdmap/plugins/achaea-danger/danger-rules.test.ts"] }))).warnings.length, 0);
+});
+
+test("evaluates lazily constructed rule messages", async () => {
+  const redGreen = new RedGreenRule(async () => false, () => "Generated failure");
+  assert.deepEqual((await check(redGreen)).failures, ["Generated failure"]);
+
+  const sanity = new SanityCheckRule(async () => false, () => "Generated warning");
+  assert.deepEqual((await check(sanity)).warnings, ["Generated warning"]);
+});
+
+test("reports IDs from failed room checks", async () => {
+  const invalid = new RoomCheckRule([{ id: 10 }, { id: 12 }], "invalid rooms");
+  assert.deepEqual((await check(invalid)).failures, ["Found invalid rooms: 10,12"]);
+
+  const valid = new RoomCheckRule([], "invalid rooms");
+  assert.deepEqual((await check(valid)).messages, ["No invalid rooms."]);
 });
