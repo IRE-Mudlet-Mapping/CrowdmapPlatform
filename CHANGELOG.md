@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.3.0...v1.4.0) (2026-09-28)
+
+
+### Features
+
+* centralize map explorer assets ([dec4b5c](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/dec4b5c8cc9228aef3a076668b87124e9ff6ed15))
+
 ## [1.3.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.2.0...v1.3.0) (2026-09-27)
 
 
