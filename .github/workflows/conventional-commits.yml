@@ -1,7 +1,9 @@
 name: Conventional commits
 
 on:
-  pull_request:
+  # Run from the trusted base branch so bot and fork PRs do not wait for
+  # repository workflow approval. Never execute code from the PR in this job.
+  pull_request_target:
     branches: [development]
     types: [opened, edited, reopened, synchronize]
 
@@ -24,23 +26,21 @@ jobs:
   validate-commits:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
       - name: Checkout trusted commit-lint tooling
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.base.sha }}
-          path: .crowdmap-platform
+          fetch-depth: 0
+      - name: Fetch pull request commits without checking them out
+        run: git fetch --no-tags origin "+refs/pull/${{ github.event.pull_request.number }}/head:refs/remotes/origin/pr-head"
       - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: .crowdmap-platform/package-lock.json
-      - run: npm ci --prefix .crowdmap-platform --ignore-scripts
+      - run: npm ci --ignore-scripts
       - name: Validate every pull request commit
         run: |
-          npx --prefix .crowdmap-platform commitlint \
-            --config .crowdmap-platform/commitlint.config.cjs \
+          npx commitlint \
+            --config commitlint.config.cjs \
             --from "${{ github.event.pull_request.base.sha }}" \
-            --to "${{ github.event.pull_request.head.sha }}"
+            --to refs/remotes/origin/pr-head
