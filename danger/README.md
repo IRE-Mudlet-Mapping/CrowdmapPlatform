@@ -21,9 +21,9 @@ Danger wrapper or Dangerfile:
 }
 ```
 
-Run the command from the plugin directory. It discovers the nearest
-`crowdmap-plugin.json` and repository `crowdmap.json`, then runs the module
-declared by the plugin's `dangerRules` field against `origin/development`.
+Run the command from the game repository or a plugin directory. It discovers
+the repository `crowdmap.json` and its game-owned Danger plugins, then runs the
+modules declared by their `dangerRules` fields against `origin/development`.
 Use `crowdmap-danger local --base <ref>` to select another base revision.
 
 This command intentionally runs only the game-owned extension rules. Common

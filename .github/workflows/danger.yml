@@ -28,12 +28,12 @@ jobs:
           cache: npm
           cache-dependency-path: .crowdmap-platform/package-lock.json
       - run: npm ci --prefix .crowdmap-platform
-      - name: Install game-owned Danger plugin dependencies
+      - name: Install optional game-owned Danger dependencies
         run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json danger "$GITHUB_WORKSPACE"
       - name: Run the shared checks from the game root
         run: |
           cp -R .crowdmap-platform/danger .crowdmap-danger
-          ln -s "$GITHUB_WORKSPACE/.crowdmap-platform/node_modules" "$GITHUB_WORKSPACE/node_modules"
+          ln -s "$GITHUB_WORKSPACE/.crowdmap-platform/node_modules" "$GITHUB_WORKSPACE/.crowdmap-danger/node_modules"
           node .crowdmap-platform/scripts/generate-danger-extensions.mjs crowdmap.json .crowdmap-danger/extensions.ts "$GITHUB_WORKSPACE"
           ./.crowdmap-platform/node_modules/.bin/danger ci -d .crowdmap-danger/dangerfile.ts
         env:

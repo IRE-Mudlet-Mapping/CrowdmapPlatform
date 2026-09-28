@@ -47,18 +47,42 @@ function isWithin(base, candidate) {
   return path !== "" && path !== ".." && !path.startsWith(`..${sep}`);
 }
 
-export async function prepareLocalDanger(pluginRoot, repositoryRoot = findUp("crowdmap.json", pluginRoot)) {
-  if (!repositoryRoot) throw new Error("Could not find the repository crowdmap.json");
-  const manifestPath = join(pluginRoot, "crowdmap-plugin.json");
-  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-  if (typeof manifest.dangerRules !== "string") {
-    throw new Error(`${manifestPath} must declare dangerRules as a module path`);
+export function configuredDangerPlugins(repositoryRoot) {
+  const configPath = join(repositoryRoot, "crowdmap.json");
+  const config = JSON.parse(readFileSync(configPath, "utf8"));
+  const plugins = [];
+  for (const entry of config.plugins ?? []) {
+    if (typeof entry?.path !== "string") continue;
+    const pluginRoot = resolve(repositoryRoot, entry.path);
+    if (!isWithin(repositoryRoot, pluginRoot)) {
+      throw new Error(`Plugin path escapes the repository: ${entry.path}`);
+    }
+    const manifestPath = join(pluginRoot, "crowdmap-plugin.json");
+    if (!existsSync(manifestPath)) continue;
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    if (typeof manifest.dangerRules === "string") plugins.push(pluginRoot);
   }
+  return plugins;
+}
 
-  const rulesPath = resolve(pluginRoot, manifest.dangerRules);
-  if (!isWithin(pluginRoot, rulesPath) || !existsSync(rulesPath)) {
-    throw new Error(`${manifestPath} declares an invalid dangerRules module`);
-  }
+export async function prepareLocalDanger(pluginRoots, repositoryRoot) {
+  const roots = Array.isArray(pluginRoots) ? pluginRoots : [pluginRoots];
+  repositoryRoot ??= findUp("crowdmap.json", roots[0]);
+  if (!repositoryRoot) throw new Error("Could not find the repository crowdmap.json");
+  if (roots.length === 0) throw new Error("No game-owned Danger plugin is configured");
+  const rulesPaths = roots.map((pluginRoot) => {
+    const manifestPath = join(pluginRoot, "crowdmap-plugin.json");
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    if (typeof manifest.dangerRules !== "string") {
+      throw new Error(`${manifestPath} must declare dangerRules as a module path`);
+    }
+
+    const rulesPath = resolve(pluginRoot, manifest.dangerRules);
+    if (!isWithin(pluginRoot, rulesPath) || !existsSync(rulesPath)) {
+      throw new Error(`${manifestPath} declares an invalid dangerRules module`);
+    }
+    return rulesPath;
+  });
 
   // Bundle the extension module to CommonJS before giving it to Danger. Its
   // built-in TypeScript loader otherwise mixes CommonJS output with the
@@ -66,7 +90,14 @@ export async function prepareLocalDanger(pluginRoot, repositoryRoot = findUp("cr
   const scratch = mkdtempSync(join(repositoryRoot, ".crowdmap-danger-local-"));
   try {
     await build({
-      entryPoints: [rulesPath],
+      stdin: {
+        contents: [
+          ...rulesPaths.map((path, index) => `import * as plugin${index} from ${JSON.stringify(path)};`),
+          `export const rules = [${rulesPaths.map((_, index) => `...Object.values(plugin${index})`).join(", ")}];`,
+        ].join("\n"),
+        loader: "ts",
+        resolveDir: repositoryRoot,
+      },
       outfile: join(scratch, "danger-rules.cjs"),
       bundle: true,
       format: "cjs",
@@ -92,9 +123,9 @@ export async function prepareLocalDanger(pluginRoot, repositoryRoot = findUp("cr
       }],
     });
     writeFileSync(join(scratch, "dangerfile.ts"), [
-      'const rules = require("./danger-rules.cjs");',
+      'const { rules } = require("./danger-rules.cjs");',
       "",
-      "Object.values(rules).forEach((rule) => rule.check(danger));",
+      "rules.forEach((rule) => rule.check(danger));",
       "",
     ].join("\n"));
 
@@ -107,20 +138,24 @@ export async function prepareLocalDanger(pluginRoot, repositoryRoot = findUp("cr
 
 export async function runLocalDanger(argv = process.argv.slice(2), cwd = process.cwd()) {
   const { base } = parseArguments(argv);
-  const pluginRoot = findUp("crowdmap-plugin.json", cwd);
-  if (!pluginRoot) throw new Error("Could not find crowdmap-plugin.json");
-  const repositoryRoot = findUp("crowdmap.json", pluginRoot);
+  const repositoryRoot = findUp("crowdmap.json", cwd);
   if (!repositoryRoot) throw new Error("Could not find the repository crowdmap.json");
+  const nearestPlugin = findUp("crowdmap-plugin.json", cwd);
+  const pluginRoots = nearestPlugin && isWithin(repositoryRoot, nearestPlugin)
+    ? [nearestPlugin]
+    : configuredDangerPlugins(repositoryRoot);
+  if (pluginRoots.length === 0) throw new Error("No game-owned Danger plugin is configured");
 
-  const scratch = await prepareLocalDanger(pluginRoot, repositoryRoot);
+  const scratch = await prepareLocalDanger(pluginRoots, repositoryRoot);
   try {
-    const pluginRequire = createRequire(join(pluginRoot, "package.json"));
     let dangerCli;
-    try {
-      dangerCli = pluginRequire.resolve("danger/distribution/commands/danger.js");
-    } catch {
-      dangerCli = require.resolve("danger/distribution/commands/danger.js");
+    for (const dependencyRoot of [repositoryRoot, ...pluginRoots]) {
+      try {
+        dangerCli = createRequire(join(dependencyRoot, "package.json")).resolve("danger/distribution/commands/danger.js");
+        break;
+      } catch {}
     }
+    dangerCli ??= require.resolve("danger/distribution/commands/danger.js");
     const result = spawnSync(process.execPath, [
       dangerCli,
       "local",
