@@ -3,14 +3,25 @@
   "version": "0.0.0-development",
   "description": "Shared Danger rule framework for IRE Mudlet crowdmaps",
   "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build"
+  },
   "files": [
     "classes",
+    "dist",
     "helpers",
     "README.md"
   ],
   "exports": {
-    "./MapModel": "./helpers/MapModel.ts",
-    "./Rule": "./classes/Rule.ts"
+    "./MapModel": {
+      "types": "./dist/helpers/MapModel.d.ts",
+      "import": "./dist/helpers/MapModel.js"
+    },
+    "./Rule": {
+      "types": "./dist/classes/Rule.d.ts",
+      "import": "./dist/classes/Rule.js"
+    }
   },
   "engines": {
     "node": ">=22.12.0"
