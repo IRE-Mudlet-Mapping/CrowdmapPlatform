@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.9.1...v1.10.0) (2026-09-28)
+
+
+### Features
+
+* **danger:** support root-owned plugin tooling ([7d07658](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/7d07658509a3a392e05cb271c68706c986bb1733))
+
 ## [1.9.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.9.0...v1.9.1) (2026-09-28)
 
 
