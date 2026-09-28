@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.8.0...v1.8.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **release:** compile shared Danger SDK ([4f2f320](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/4f2f320515f4a0dc43b0b96d767c08f178c94a88))
+
 ## [1.8.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.7.1...v1.8.0) (2026-09-28)
 
 
