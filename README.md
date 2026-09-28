@@ -14,16 +14,20 @@ The canonical exports are `Map/map.json` (readable), `Map/map_mini.json`
 (minified), `Map/mapExport.json`, and `Map/colors.json`. The original binary
 map remains `Map/map`; no duplicate `map.dat` is published.
 
-The explorer consumes `mapExport.json` and `colors.json`. Game-specific steps,
+The platform-owned explorer consumes `mapExport.json` and `colors.json`. Its
+current vendored assets are rendered from `explorer.title` and optional
+`explorer.npcUrl`; game repositories do not carry a `website/` copy.
+Game-specific steps,
 including Achaea's denizen database publication, use game-owned plugins rather
 than being embedded in the common pipeline.
 
 ## Status
 
-This initial repository establishes the export contract, map scripts, shared
-Danger policy, JSON and visual diff workflows, publishing workflow, dependency
-validation, and Dependabot auto-merge workflow. Explorer integration is the
-remaining platform migration.
+This repository establishes the export contract, map scripts, shared Danger
+policy, JSON and visual diff workflows, publishing workflow, explorer assets,
+dependency validation, and Dependabot auto-merge workflow. Updating the
+centralized vendored explorer to the maintained map-browser upstream is a
+separate follow-up migration.
 
 ## Consumer configuration
 

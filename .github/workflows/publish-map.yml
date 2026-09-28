@@ -33,12 +33,16 @@ jobs:
         run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json after-export "$GITHUB_WORKSPACE"
       - name: Run after-export plugins
         run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json after-export "$GITHUB_WORKSPACE"
+      - name: Prepare shared map explorer
+        run: node .crowdmap-platform/scripts/prepare-explorer.mjs crowdmap.json "${{ inputs.website-directory }}" "$GITHUB_WORKSPACE"
       - name: Copy published map artifacts
         run: cp -R Map/ "${{ inputs.website-directory }}/"
       - name: Prepare before-publish plugins
         run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json before-publish "$GITHUB_WORKSPACE"
       - name: Run before-publish plugins
         run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json before-publish "$GITHUB_WORKSPACE"
+        env:
+          CROWDMAP_PUBLISH_DIR: ${{ inputs.website-directory }}
       - uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           branch: ${{ inputs.deployment-branch }}
@@ -47,3 +51,5 @@ jobs:
         run: node .crowdmap-platform/scripts/prepare-plugins.mjs crowdmap.json after-publish "$GITHUB_WORKSPACE"
       - name: Run after-publish plugins
         run: node .crowdmap-platform/scripts/run-plugins.mjs crowdmap.json after-publish "$GITHUB_WORKSPACE"
+        env:
+          CROWDMAP_PUBLISH_DIR: ${{ inputs.website-directory }}
