@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.6.0...v1.7.0) (2026-09-28)
+
+
+### Features
+
+* **danger:** share rule framework with game plugins ([959b82d](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/959b82d87f7f60e625904336740f5038bbe96e5d))
+
 ## [1.6.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.5.0...v1.6.0) (2026-09-28)
 
 
