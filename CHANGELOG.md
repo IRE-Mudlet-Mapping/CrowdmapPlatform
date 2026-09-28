@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.4.0...v1.5.0) (2026-09-28)
+
+
+### Features
+
+* use game title for map explorer ([04b2d5b](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/04b2d5ba4b0096949b337449bab20f271b45db9c))
+
 ## [1.4.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.3.0...v1.4.0) (2026-09-28)
 
 
