@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.0...v1.11.1) (2026-10-03)
+
+
+### Bug Fixes
+
+* update visual diff action to v18 ([c8fb7cb](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/c8fb7cb233b43af2b5ce8f6a72a5d72e9410fef1))
+
 ## [1.11.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.10.0...v1.11.0) (2026-10-03)
 
 
