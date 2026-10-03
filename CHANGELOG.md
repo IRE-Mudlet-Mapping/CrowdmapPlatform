@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.10.0...v1.11.0) (2026-10-03)
+
+
+### Features
+
+* harden platform maintenance and plugin contracts ([5f51418](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/5f51418e19878ee7282778860ef5195aeb645566))
+
 ## [1.10.0](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.9.1...v1.10.0) (2026-09-28)
 
 
