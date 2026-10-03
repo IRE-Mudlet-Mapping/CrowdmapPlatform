@@ -25,7 +25,7 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha }}
       - name: Create map diff
         if: steps.map-changed.outputs.any_changed == 'true'
-        uses: Delwing/mudlet-map-diff-action@d7e0a0bd36c1c28be608e9d2c2316fc56e58473b # details-tag-fix
+        uses: Delwing/mudlet-map-diff-action@e5964e9aa57244941dd49b9a967841a2ba5cdd97 # v18
         with:
           old-map: Map/map
           reuse-comment: true
