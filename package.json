@@ -11,13 +11,13 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
-    "@types/node": "^26.6.2",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@types/node": "^26.6.3",
     "danger": "^14.0.7",
-    "esbuild": "^0.25.10",
+    "esbuild": "^0.28.2",
     "lodash": "^4.18.1",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "mudlet-map-binary-reader": "^2.0.0",
