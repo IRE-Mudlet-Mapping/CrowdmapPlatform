@@ -1,24 +1,69 @@
 # Crowdmap plugins
 
-Plugins are owned by their game repository. The platform owns only the hook
-protocol and invokes a selected plugin during trusted publish runs. This keeps
-game-specific integration code, dependencies, credentials, and release cadence
-with the game that needs them.
+Plugins are owned by the game repository that needs them. The platform owns
+the manifest contract and invokes plugins during trusted workflows; it does
+not contain game-specific integrations, credentials, or rules.
 
-Every game plugin declares in `crowdmap-plugin.json`:
+Add each plugin directory to the root `crowdmap.json`:
 
-- its lifecycle hook command array (`after-export`, `before-publish`, or
-  `after-publish`);
-- its own package/dependencies;
-- required GitHub secrets; and
-- a documented configuration object and tests.
+```json
+{
+  "plugins": [
+    { "path": "crowdmap/plugins/achaea-denizens" }
+  ]
+}
+```
+
+Every plugin contains a `crowdmap-plugin.json` manifest. The complete manifest
+contract is published as [`crowdmap-plugin.schema.json`](../crowdmap-plugin.schema.json).
+Only these fields are supported:
+
+- `id`: a repository-unique lowercase identifier;
+- `hooks`: zero or more lifecycle commands;
+- `dangerRules`: an optional repository-relative Danger extension module.
+
+Hook commands are non-empty arrays, so arguments are passed without shell
+parsing:
+
+```json
+{
+  "id": "achaea-denizens",
+  "hooks": {
+    "after-export": ["node", "update.mjs"],
+    "before-publish": ["node", "validate.mjs"],
+    "after-publish": ["node", "report.mjs"]
+  }
+}
+```
+
+The publish workflow invokes hooks in this order:
+
+1. `after-export`, after the platform has generated `Map/*.json`;
+2. `before-publish`, after the explorer and map files have been assembled;
+3. `after-publish`, after the deployment action has completed.
+
+Each command runs in its plugin directory. `CROWDMAP_ROOT` contains the game
+repository path. Publication hooks also receive `CROWDMAP_PUBLISH_DIR`, the
+configured website staging directory. Plugins document their own environment
+variables and GitHub secrets; secrets are supplied by the game workflow or
+repository and are intentionally not declared in the manifest.
+
+## Dependencies and tests
+
+A game that only uses platform behavior needs no `package.json`. If one or
+more game plugins need Node dependencies or development tooling, declare them
+once in the game repository's root `package.json` and commit the root
+`package-lock.json`. The platform installs that root package for relevant
+workflows and runs root `test` and `typecheck` scripts during dependency
+validation.
+
+Plugin-local package files remain supported for independently packaged
+plugins, but the consolidated root package is recommended for ordinary game
+repositories because it gives Dependabot only one dependency location.
 
 ## Danger rule extensions
 
-Plugins can also add game-specific pull-request rules with a `dangerRules`
-module. The platform generates static exports for these modules and evaluates
-them alongside its common rules. The module must export objects implementing
-the shared `Rule` shape: a `check(danger)` function.
+Game-specific pull-request rules use `dangerRules`:
 
 ```json
 {
@@ -28,27 +73,10 @@ the shared `Rule` shape: a `check(danger)` function.
 }
 ```
 
-Danger checks run from the trusted base checkout: a pull request can supply a
-candidate map file, but cannot alter the extension code that is executed.
+The module exports objects implementing the shared `Rule` shape: a
+`check(danger)` function. The platform generates static imports for declared
+modules and evaluates them alongside the common rules.
 
-A Danger plugin may own a `package.json` and lockfile. The platform installs
-those dependencies before loading the rules, and the dependency-validation
-workflow runs the plugin's `test` and `typecheck` scripts when present. This
-keeps game-specific development tools and dependencies with the game plugin.
-
-For example, Achaea can own `crowdmap/plugins/denizens/`:
-
-```json
-// crowdmap.json
-{ "plugins": [{ "path": "crowdmap/plugins/denizens" }] }
-```
-
-```json
-// crowdmap/plugins/denizens/crowdmap-plugin.json
-{ "id": "achaea-denizens", "hooks": { "after-export": ["node", "run.mjs"] } }
-```
-
-The reusable publish workflow resolves plugin paths beneath the caller
-repository, installs only their declared packages, and invokes `after-export`,
-`before-publish`, and `after-publish` in that order. Plugins never run as part
-of untrusted pull-request validation.
+Danger checks run from the trusted base checkout. A pull request supplies only
+its candidate `Map/map`; it cannot replace the game-owned rule code that is
+executed.

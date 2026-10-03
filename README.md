@@ -56,7 +56,10 @@ Each game repository will add `crowdmap.json`:
 }
 ```
 
-The schema is available in [`crowdmap.schema.json`](crowdmap.schema.json).
+The configuration schema is available in
+[`crowdmap.schema.json`](crowdmap.schema.json). Game plugin manifests use
+[`crowdmap-plugin.schema.json`](crowdmap-plugin.schema.json). Both contracts
+are enforced by the workflow runtime rather than serving as editor hints only.
 See [`plugins/README.md`](plugins/README.md) for the game-owned plugin contract.
 
 ## Releases

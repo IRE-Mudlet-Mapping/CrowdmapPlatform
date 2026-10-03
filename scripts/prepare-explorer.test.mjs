@@ -5,10 +5,16 @@ import { join } from "node:path";
 import test from "node:test";
 import { prepareExplorer } from "./prepare-explorer.mjs";
 
+const baseConfig = {
+  game: { id: "test", title: "The Test Map" },
+  map: { source: "Map/map" },
+};
+
 test("copies and renders the shared explorer", () => {
   const root = mkdtempSync(join(tmpdir(), "crowdmap-explorer-"));
   writeFileSync(join(root, "crowdmap.json"), JSON.stringify({
-    game: { title: "The Test & Example Map" },
+    ...baseConfig,
+    game: { id: "test", title: "The Test & Example Map" },
     explorer: {
       npcUrl: "./Map/denizen.json?kind=person&active=true",
       logo: "branding/logo.svg",
@@ -39,7 +45,7 @@ test("copies and renders the shared explorer", () => {
 
 test("omits NPC integration unless configured", () => {
   const root = mkdtempSync(join(tmpdir(), "crowdmap-explorer-"));
-  writeFileSync(join(root, "crowdmap.json"), JSON.stringify({ game: { title: "The Test Map" } }));
+  writeFileSync(join(root, "crowdmap.json"), JSON.stringify(baseConfig));
 
   prepareExplorer(root);
 
@@ -54,7 +60,7 @@ test("omits NPC integration unless configured", () => {
 
 test("refuses to replace the game repository root", () => {
   const root = mkdtempSync(join(tmpdir(), "crowdmap-explorer-"));
-  writeFileSync(join(root, "crowdmap.json"), JSON.stringify({ game: { title: "The Test Map" } }));
+  writeFileSync(join(root, "crowdmap.json"), JSON.stringify(baseConfig));
 
   assert.throws(() => prepareExplorer(root, "crowdmap.json", "."), /must be a child/);
 });

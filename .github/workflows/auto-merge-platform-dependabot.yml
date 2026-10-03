@@ -1,0 +1,13 @@
+name: Auto-merge platform Dependabot updates
+
+on:
+  workflow_run:
+    workflows: [Platform CI]
+    types: [completed]
+
+jobs:
+  auto-merge:
+    uses: ./.github/workflows/auto-merge-dependabot.yml
+    permissions:
+      contents: write
+      pull-requests: write

@@ -10,7 +10,11 @@ function fixture(config) {
   const directory = mkdtempSync(join(tmpdir(), "crowdmap-plugin-"));
   const plugin = join(directory, "crowdmap", "plugins", "denizens");
   mkdirSync(plugin, { recursive: true });
-  writeFileSync(join(directory, "crowdmap.json"), JSON.stringify(config));
+  writeFileSync(join(directory, "crowdmap.json"), JSON.stringify({
+    game: { id: "achaea", title: "Achaea" },
+    map: { source: "Map/map" },
+    ...config,
+  }));
   writeFileSync(join(plugin, "crowdmap-plugin.json"), JSON.stringify({
     id: "achaea-denizens",
     hooks: { "after-export": ["node", "run.mjs"] },
@@ -49,6 +53,26 @@ test("rejects a plugin outside the game repository", () => {
   const directory = fixture({ plugins: [{ path: "../denizens" }] });
   try {
     assert.throws(() => resolvePlugins(directory));
+  } finally {
+    rmSync(directory, { recursive: true });
+  }
+});
+
+test("rejects duplicate plugin ids", () => {
+  const directory = fixture({
+    plugins: [
+      { path: "crowdmap/plugins/denizens" },
+      { path: "crowdmap/plugins/duplicate" },
+    ],
+  });
+  const duplicate = join(directory, "crowdmap", "plugins", "duplicate");
+  mkdirSync(duplicate, { recursive: true });
+  writeFileSync(join(duplicate, "crowdmap-plugin.json"), JSON.stringify({
+    id: "achaea-denizens",
+    hooks: {},
+  }));
+  try {
+    assert.throws(() => resolvePlugins(directory), /Duplicate plugin id/);
   } finally {
     rmSync(directory, { recursive: true });
   }

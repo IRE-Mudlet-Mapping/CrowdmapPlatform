@@ -1,6 +1,7 @@
 import { cpSync, copyFileSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { validateCrowdmapConfig } from "./validation.mjs";
 
 const platformDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const explorerDirectory = resolve(platformDirectory, "explorer");
@@ -31,11 +32,8 @@ export function prepareExplorer(baseDirectory = ".", configPath = "crowdmap.json
     throw new Error("Explorer output directory must be a child of the game repository");
   }
 
-  const config = JSON.parse(readFileSync(configFile, "utf8"));
-  const title = config.game?.title;
-  if (typeof title !== "string" || title.length === 0) {
-    throw new Error("crowdmap.json must define game.title");
-  }
+  const config = validateCrowdmapConfig(JSON.parse(readFileSync(configFile, "utf8")), configFile);
+  const title = config.game.title;
 
   rmSync(output, { recursive: true, force: true });
   cpSync(explorerDirectory, output, { recursive: true });
