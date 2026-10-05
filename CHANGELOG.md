@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.2](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.1...v1.11.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* retain TypeScript compiler API compatibility for Danger ([2f965a4](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/2f965a48378ec98285a29184976f6928639c8c53))
+
 ## [1.11.1](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.0...v1.11.1) (2026-10-03)
 
 
