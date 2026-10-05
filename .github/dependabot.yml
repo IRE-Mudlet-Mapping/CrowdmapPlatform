@@ -5,6 +5,10 @@ updates:
     target-branch: development
     schedule:
       interval: weekly
+    # Danger 14 uses the TypeScript JavaScript compiler API removed in v7.
+    ignore:
+      - dependency-name: typescript
+        versions: [">=7"]
     groups:
       npm-dependencies:
         patterns: ["*"]
