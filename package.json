@@ -13,7 +13,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.4",
     "danger": "^14.0.7",
     "esbuild": "^0.28.2",
     "lodash": "^4.18.1",
