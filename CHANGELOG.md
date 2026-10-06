@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.3](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.2...v1.11.3) (2026-10-06)
+
+
+### Bug Fixes
+
+* approve validated Dependabot updates before auto-merge ([#27](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/issues/27)) ([16915aa](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/16915aa0d08d14b86a31c739eb7d938536559841))
+
 ## [1.11.2](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.1...v1.11.2) (2026-10-05)
 
 
