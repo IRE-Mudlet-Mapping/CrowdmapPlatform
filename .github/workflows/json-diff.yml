@@ -46,7 +46,7 @@ jobs:
           {
             echo '## Textual map diff'
             echo '<details>'
-            echo '<summary>Open to see the map diff</summary>'
+            echo '<summary>Open to see the diff for commit ${{ github.event.pull_request.head.sha }}</summary>'
             echo
             echo '```diff'
             .crowdmap-platform/scripts/create-diff.sh old/Map/map.json current/Map/map.json || true

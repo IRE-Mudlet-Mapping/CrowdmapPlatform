@@ -68,3 +68,7 @@ test("shared publication requires the development branch", () => {
   const publish = readFileSync(new URL("../.github/workflows/publish-map.yml", import.meta.url), "utf8");
   assert.match(publish, /jobs:\n  publish:\n    if: github\.ref == 'refs\/heads\/development'\n/);
 });
+
+test("JSON diff comments identify the exact PR head commit", () => {
+  assert.match(workflow, /<summary>Open to see the diff for commit \$\{\{ github\.event\.pull_request\.head\.sha \}\}<\/summary>/);
+});
