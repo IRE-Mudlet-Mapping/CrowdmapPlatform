@@ -70,8 +70,12 @@ binary map, so forks and branches created before migration do not need their
 own `crowdmap.json`. Generated exports use the same trusted configuration for
 both revisions.
 
-The reusable Dependabot auto-merge workflow approves validated Dependabot pull
-requests targeting `development` before enabling squash auto-merge. Consumer
+The reusable Dependabot auto-merge workflow approves validated minor and patch
+Dependabot pull requests targeting `development` before enabling squash
+auto-merge. Verified Dependabot metadata determines the update type; major
+updates and unknown types receive neither automated approval nor auto-merge.
+Leave major updates enabled in Dependabot so breaking releases produce PRs for
+manual review and end-to-end validation, including platform `@v2` upgrades. Consumer
 repositories must enable **Allow GitHub Actions to create and approve pull
 requests** in their Actions settings, and enable auto-merge and squash merging.
 Existing required reviews and status checks remain enforced.

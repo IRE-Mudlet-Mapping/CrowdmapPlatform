@@ -31,14 +31,44 @@ jobs:
           else
             echo "eligible=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Approve validated dependency update
+      - name: Prepare Dependabot metadata context
         if: steps.pull-request.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pull-request.outputs.number }}
+        run: |
+          # fetch-metadata expects a PR payload; workflow_run does not provide one.
+          gh api "/repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '{pull_request: .}' > "$RUNNER_TEMP/crowdmap-dependabot-event.json"
+      - name: Fetch verified Dependabot metadata
+        if: steps.pull-request.outputs.eligible == 'true'
+        id: metadata
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2
+        env:
+          GITHUB_EVENT_PATH: ${{ runner.temp }}/crowdmap-dependabot-event.json
+        with:
+          github-token: ${{ github.token }}
+      - name: Select compatible update types
+        if: steps.pull-request.outputs.eligible == 'true'
+        id: update-policy
+        env:
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+        run: |
+          case "$UPDATE_TYPE" in
+            version-update:semver-patch|version-update:semver-minor)
+              echo "compatible=true" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "compatible=false" >> "$GITHUB_OUTPUT"
+              echo "Update type '$UPDATE_TYPE' requires manual review." ;;
+          esac
+      - name: Approve validated dependency update
+        if: steps.pull-request.outputs.eligible == 'true' && steps.update-policy.outputs.compatible == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
         run: gh pr review --approve "$PR_URL"
       - name: Enable squash auto-merge
-        if: steps.pull-request.outputs.eligible == 'true'
+        if: steps.pull-request.outputs.eligible == 'true' && steps.update-policy.outputs.compatible == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
