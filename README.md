@@ -64,6 +64,12 @@ See [`plugins/README.md`](plugins/README.md) for the game-owned plugin contract.
 
 ## Releases
 
+The reusable Dependabot auto-merge workflow approves validated Dependabot pull
+requests targeting `development` before enabling squash auto-merge. Consumer
+repositories must enable **Allow GitHub Actions to create and approve pull
+requests** in their Actions settings, and enable auto-merge and squash merging.
+Existing required reviews and status checks remain enforced.
+
 Game repositories call reusable workflows at `@v1`. Each called workflow also
 checks out the platform scripts at `v1`, so the workflow definition and the
 executed implementation always come from the same compatibility line.
