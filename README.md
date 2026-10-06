@@ -64,6 +64,12 @@ See [`plugins/README.md`](plugins/README.md) for the game-owned plugin contract.
 
 ## Releases
 
+Publication is restricted to `development`, including manual dispatches.
+JSON diffs use the trusted base configuration and overlay only the pull request's
+binary map, so forks and branches created before migration do not need their
+own `crowdmap.json`. Generated exports use the same trusted configuration for
+both revisions.
+
 The reusable Dependabot auto-merge workflow approves validated Dependabot pull
 requests targeting `development` before enabling squash auto-merge. Consumer
 repositories must enable **Allow GitHub Actions to create and approve pull

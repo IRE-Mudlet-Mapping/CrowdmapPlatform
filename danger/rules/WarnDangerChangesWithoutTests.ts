@@ -15,12 +15,16 @@ function isRuleTest(path: string) {
 
 export const warnDangerChangesWithoutTests = new SanityCheckRule(
   async (danger: DangerDSLType) => {
-    const changed = [
+    const updated = [
       ...danger.git.modified_files,
       ...danger.git.created_files,
+    ];
+    const changed = [
+      ...updated,
       ...danger.git.deleted_files,
     ];
-    return !changed.some(isRuleSource) || changed.some(isRuleTest);
+    return !changed.some(isRuleSource) || updated.some(isRuleTest) ||
+      (!updated.some(isRuleSource) && danger.git.deleted_files.some(isRuleTest));
   },
   "Danger rules changed without corresponding test changes."
 );
