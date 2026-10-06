@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.4](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.3...v1.11.4) (2026-10-06)
+
+
+### Bug Fixes
+
+* harden game migrations and shared workflow checks ([#29](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/issues/29)) ([57ad2db](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/57ad2dbeac2506968ffb93798cf4690362bbe059))
+
 ## [1.11.3](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.2...v1.11.3) (2026-10-06)
 
 
