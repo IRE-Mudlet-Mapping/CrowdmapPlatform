@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.5](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.4...v1.11.5) (2026-10-06)
+
+
+### Bug Fixes
+
+* require manual review for major dependency updates ([#31](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/issues/31)) ([c023752](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/commit/c0237523e6bd6416c7ce17bdcf0a3eef6231e86b))
+
 ## [1.11.4](https://github.com/IRE-Mudlet-Mapping/CrowdmapPlatform/compare/v1.11.3...v1.11.4) (2026-10-06)
 
 
