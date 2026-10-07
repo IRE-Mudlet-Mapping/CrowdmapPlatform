@@ -19,3 +19,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
+      - name: Verify update policy against a real Dependabot PR (read-only)
+        run: node --test scripts/dependabot-auto-merge.test.mjs
+        env:
+          CROWDMAP_VERIFY_LIVE_DEPENDABOT: "true"
+          GITHUB_TOKEN: ${{ github.token }}
