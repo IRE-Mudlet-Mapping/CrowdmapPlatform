@@ -82,11 +82,18 @@ jobs:
             core.setOutput('compatible', 'true');
       - name: Approve validated dependency update
         if: steps.pull-request.outputs.eligible == 'true' && steps.update-policy.outputs.compatible == 'true'
+        uses: actions/github-script@v9
         env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
+          PR_NUMBER: ${{ steps.pull-request.outputs.number }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: gh pr review --approve --commit "$HEAD_SHA" "$PR_URL"
+        with:
+          script: |
+            await github.rest.pulls.createReview({
+              ...context.repo,
+              pull_number: Number(process.env.PR_NUMBER),
+              event: 'APPROVE',
+              commit_id: process.env.HEAD_SHA,
+            });
       - name: Enable squash auto-merge
         if: steps.pull-request.outputs.eligible == 'true' && steps.update-policy.outputs.compatible == 'true'
         env:

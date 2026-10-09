@@ -96,9 +96,38 @@ test("approval and merge are gated and bound to the validated commit", () => {
     assert.match(step, /eligible == 'true' && steps\.update-policy\.outputs\.compatible == 'true'/);
     assert.match(step, /HEAD_SHA: \$\{\{ github\.event\.workflow_run\.head_sha \}\}/);
   }
-  assert.match(workflow, /gh pr review --approve --commit "\$HEAD_SHA"/);
+  assert.match(workflow, /github\.rest\.pulls\.createReview/);
   assert.match(workflow, /gh pr merge --auto --squash --match-head-commit "\$HEAD_SHA"/);
-  assert.doesNotMatch(workflow, /GITHUB_EVENT_PATH|dependabot\/fetch-metadata/);
+  assert.doesNotMatch(workflow, /GITHUB_EVENT_PATH|dependabot\/fetch-metadata|gh pr review/);
+});
+
+const approvalStep = workflow.slice(workflow.indexOf("      - name: Approve validated dependency update")).split(/\n      - name:/)[0];
+const approvalScript = approvalStep.match(/          script: \|\n([\s\S]*)/)[1].replace(/^            /gm, "");
+
+test("approval submits a supported API request bound to the validated SHA", async () => {
+  const requests = [];
+  const github = { rest: { pulls: { createReview: async (parameters) => { requests.push(parameters); } } } };
+  await new AsyncFunction("github", "context", "process", approvalScript)(
+    github, { repo: { owner: "example", repo: "game" } }, { env: { PR_NUMBER: "42", HEAD_SHA: "validated-head" } },
+  );
+  assert.deepEqual(requests, [{
+    owner: "example",
+    repo: "game",
+    pull_number: 42,
+    event: "APPROVE",
+    commit_id: "validated-head",
+  }]);
+});
+
+test("approval API failure propagates and merge does not override failure gating", async () => {
+  const error = new Error("GitHub rejected approval");
+  const github = { rest: { pulls: { createReview: async () => { throw error; } } } };
+  await assert.rejects(new AsyncFunction("github", "context", "process", approvalScript)(
+    github, { repo: { owner: "example", repo: "game" } }, { env: { PR_NUMBER: "42", HEAD_SHA: "validated-head" } },
+  ), (actual) => actual === error);
+  const mergeStep = workflow.slice(workflow.indexOf("      - name: Enable squash auto-merge"));
+  assert.doesNotMatch(approvalStep, /continue-on-error:/);
+  assert.doesNotMatch(mergeStep, /always\(\)|failure\(\)|cancelled\(\)/);
 });
 
 test("real Dependabot PR metadata (optional read-only integration)", { skip: !process.env.CROWDMAP_VERIFY_LIVE_DEPENDABOT }, async () => {
