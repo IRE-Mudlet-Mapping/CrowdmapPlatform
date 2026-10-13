@@ -31,45 +31,73 @@ jobs:
           else
             echo "eligible=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Prepare Dependabot metadata context
-        if: steps.pull-request.outputs.eligible == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.pull-request.outputs.number }}
-        run: |
-          # fetch-metadata expects a PR payload; workflow_run does not provide one.
-          gh api "/repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '{pull_request: .}' > "$RUNNER_TEMP/crowdmap-dependabot-event.json"
-      - name: Fetch verified Dependabot metadata
-        if: steps.pull-request.outputs.eligible == 'true'
-        id: metadata
-        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2
-        env:
-          GITHUB_EVENT_PATH: ${{ runner.temp }}/crowdmap-dependabot-event.json
-        with:
-          github-token: ${{ github.token }}
-      - name: Select compatible update types
+      - name: Verify Dependabot commits and update types
         if: steps.pull-request.outputs.eligible == 'true'
         id: update-policy
+        uses: actions/github-script@v9
         env:
-          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
-        run: |
-          case "$UPDATE_TYPE" in
-            version-update:semver-patch|version-update:semver-minor)
-              echo "compatible=true" >> "$GITHUB_OUTPUT" ;;
-            *)
-              echo "compatible=false" >> "$GITHUB_OUTPUT"
-              echo "Update type '$UPDATE_TYPE' requires manual review." ;;
-          esac
+          PR_NUMBER: ${{ steps.pull-request.outputs.number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        with:
+          script: |
+            core.setOutput('compatible', 'false');
+            core.setOutput('update-type', 'unknown');
+            const parameters = { ...context.repo, pull_number: Number(process.env.PR_NUMBER) };
+            const { data: pr } = await github.rest.pulls.get(parameters);
+            if (pr.user.login !== 'dependabot[bot]' || pr.base.ref !== 'development') return;
+            const commits = await github.paginate(github.rest.pulls.listCommits, parameters);
+            if (!commits.length || commits.some(commit =>
+              commit.author?.login !== 'dependabot[bot]' || !commit.commit.verification?.verified
+            )) {
+              core.info('Unverified or non-Dependabot commits require manual review.');
+              return;
+            }
+            const types = [];
+            for (const commit of commits) {
+              // Accept only the structured metadata document and known update types.
+              // Any unsupported layout fails closed instead of guessing from titles.
+              const documents = [...commit.commit.message.matchAll(/(?:^|\n)---\r?\n(updated-dependencies:[\s\S]*?)\r?\n\.\.\.(?:\r?\n|$)/g)];
+              if (documents.length !== 1) return;
+              const dependencies = documents[0][1].split(/^\s*- dependency-name:/m).slice(1);
+              if (!dependencies.length) return;
+              for (const dependency of dependencies) {
+                const updates = [...dependency.matchAll(/^  update-type: (version-update:semver-(?:patch|minor|major))\r?$/gm)];
+                if (updates.length !== 1) return;
+                types.push(updates[0][1]);
+              }
+            }
+            const type = types.includes('version-update:semver-major') ? 'version-update:semver-major'
+              : types.includes('version-update:semver-minor') ? 'version-update:semver-minor'
+              : 'version-update:semver-patch';
+            core.setOutput('update-type', type);
+            if (type === 'version-update:semver-major') {
+              core.info('Major updates require manual review.');
+              return;
+            }
+            if (pr.state !== 'open' || pr.head.sha !== process.env.HEAD_SHA ||
+              commits.at(-1).sha !== process.env.HEAD_SHA) {
+              core.info('PR is closed or its head no longer matches the validated commit.');
+              return;
+            }
+            core.setOutput('compatible', 'true');
       - name: Approve validated dependency update
         if: steps.pull-request.outputs.eligible == 'true' && steps.update-policy.outputs.compatible == 'true'
+        uses: actions/github-script@v9
         env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
-        run: gh pr review --approve "$PR_URL"
+          PR_NUMBER: ${{ steps.pull-request.outputs.number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        with:
+          script: |
+            await github.rest.pulls.createReview({
+              ...context.repo,
+              pull_number: Number(process.env.PR_NUMBER),
+              event: 'APPROVE',
+              commit_id: process.env.HEAD_SHA,
+            });
       - name: Enable squash auto-merge
         if: steps.pull-request.outputs.eligible == 'true' && steps.update-policy.outputs.compatible == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: https://github.com/${{ github.repository }}/pull/${{ steps.pull-request.outputs.number }}
-        run: gh pr merge --auto --squash "$PR_URL"
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: gh pr merge --auto --squash --match-head-commit "$HEAD_SHA" "$PR_URL"

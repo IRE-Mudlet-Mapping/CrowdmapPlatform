@@ -72,7 +72,9 @@ both revisions.
 
 The reusable Dependabot auto-merge workflow approves validated minor and patch
 Dependabot pull requests targeting `development` before enabling squash
-auto-merge. Verified Dependabot metadata determines the update type; major
+auto-merge. The GitHub API verifies every commit's Dependabot authorship and
+signature; structured commit metadata determines the update type. Both
+mutations are tied to the validated head commit. Major
 updates and unknown types receive neither automated approval nor auto-merge.
 Leave major updates enabled in Dependabot so breaking releases produce PRs for
 manual review and end-to-end validation, including platform `@v2` upgrades. Consumer
